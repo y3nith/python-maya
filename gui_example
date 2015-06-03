@@ -62,5 +62,13 @@ def populateCharacters(*args):
 	for character in characters:
 		niceName = character.rpartition(".")[0]
 		cmds.menuItem(label = niceName, parent = "characterOptionMenu")
+
+def build(*args):
+	selectProject = cmds.optionMenu("projectOptionMenu", q = True, v = True)
+	projectPath = cmds.internalVar(upd = True).rpartition("2015-x64")[0]+ "projects/" + selectProject + "/"
+	selectedCharacter = cmds.optionMenu("characterOptionMenu", q = True, v = True)
+	fileName = projectPath + selectedCharacter + ".ma"
+	cmds.file(fileName, open = True, force = True, prompt = False)
+	print "Opening file ... " + fileName
 	
 	
