@@ -1,0 +1,66 @@
+import maya.cmds as cmds
+import os
+
+def UI():
+	#check for window exists
+	if cmds.window("exampleUI", exists = True):
+		cmds.deleteUI("exampleUI")
+		
+	#create window
+	window = cmds.window("exampleUI", title ="Example UI", w = 300, h = 300, mnb = False, mxb = False, sizeable = False)
+	
+	#creat a main layout
+	mainLayout = cmds.columnLayout(w = 300, h = 300)
+	
+	#banner image
+	imagePath = cmds.internalVar(upd = True) + "/icons/3D.jpg"
+	cmds.image(w = 300, h = 50, image = imagePath)
+	
+	#create projects option menu
+	cmds.separator(h=15)
+	projectOptionMenu = cmds.optionMenu("projectOptionMenu", w = 300, label = "Choose a Project:      ", cc = populateCharacters)
+	
+	#populate the projects
+	populateProjects()
+	
+	#create character option
+	cmds.separator(h=15)
+	characterOptionMenu = cmds.optionMenu("characterOptionMenu", w = 300, label = "Choose a Character: ")
+	
+	#populate the characters
+	populateCharacters()
+	
+	#create build button
+	cmds.separator(h=15)
+	cmds.button(label = "Build", w = 300, h = 50)
+	
+	#show window
+	cmds.showWindow(window)
+	
+def populateProjects():
+	projectPath = cmds.internalVar(upd = True).rpartition("2015-x64")[0]+ "projects/"
+	projects = os.listdir(projectPath)
+	for project in projects:
+		cmds.menuItem(label = project, parent = "projectOptionMenu")
+
+def populateCharacters(*args):
+	menuItems = cmds.optionMenu("characterOptionMenu", q = True, itemListLong = True)
+
+	if menuItems != None:
+		for item in menuItems:
+			cmds.deleteUI(item)
+			
+	selectProject = cmds.optionMenu("projectOptionMenu", q = True, v = True)
+	projectPath = cmds.internalVar(upd = True).rpartition("2015-x64")[0]+ "projects/" + selectProject + "/"
+	files = os.listdir(projectPath)
+	characters = []
+	
+	for file in files:
+		if file.rpartition(".")[2] == "ma":
+			characters.append(file)
+				
+	for character in characters:
+		niceName = character.rpartition(".")[0]
+		cmds.menuItem(label = niceName, parent = "characterOptionMenu")
+	
+	
