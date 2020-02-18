@@ -1,3 +1,37 @@
-// Cycles viewer to perspective cameras.    // These are the cameras that will be searched.    // Add to this list part of the name of any    // cameras that you may want to cycle. If you want    // to use all perspective cameras set this    // string to an empty one.    // example below.   // string $camerasToUse[] = {\"\"};
- // List the types of cameras you will name or delete names that you won't use   string $camerasToUse[] = {"persp","Left","Primary","enderCam","main","camera","enterShape"};    // get cameras    string $scnCams[] = `listCameras -p`;    string $myCamsList[]; clear($myCamsList);    for ($cam in $scnCams) {    int $inList = 0;    for ($ucam in $camerasToUse){    if (python("'"+$cam+"'.find('"+$ucam+"')"+"\n")!=-1) $inList = 1;    }    if ($inList) $myCamsList[size($myCamsList)] = $cam;    }    $myCamsList = sort ($myCamsList);    // get active camera and panel    string $myPanel = `getPanel -wf`;    string $panelType = `getPanel -to $myPanel`;    string $curCam;    if ($panelType == "modelPanel"){    $curCam = `modelEditor -q -cam $myPanel`;    } else {    $curCam = $scnCams[0];    }    // get the number of the current camera    int $i;$camNum = 0;    for ($i = 0; $i <= size($myCamsList); $i++) {    if ($myCamsList[$i] == $curCam) $camNum = $i;    }    // get the next camera    string $newCam;    if ($camNum == (size($myCamsList)-1)){    $newCam = $myCamsList[0];    } else {    $newCam = $myCamsList[$camNum+1];    }    // set the camera to the next one    print ($newCam+"\n");    
+// Cycles viewer to perspective cameras.    
+// These are the cameras that will be searched.    
+// Add to this list part of the name of any    
+// cameras that you may want to cycle. If you want to use all perspective cameras set this    
+// string to an empty one.    // example below.   
+// string $camerasToUse[] = {\"\"};
+// List the types of cameras you will name or delete names that you won't use   
+string $camerasToUse[] = {"persp","Left","Primary","enderCam","main","camera","enterShape"};    
+// get cameras    
+string $scnCams[] = `listCameras -p`;    
+string $myCamsList[]; clear($myCamsList);    
+for ($cam in $scnCams) { 
+int $inList = 0;    
+for ($ucam in $camerasToUse){    
+if (python("'"+$cam+"'.find('"+$ucam+"')"+"\n")!=-1) $inList = 1;    }    
+if ($inList) $myCamsList[size($myCamsList)] = $cam;    }    
+$myCamsList = sort ($myCamsList);    
+// get active camera and panel    
+string $myPanel = `getPanel -wf`;    
+string $panelType = `getPanel -to $myPanel`;    
+string $curCam;    
+if ($panelType == "modelPanel"){    
+$curCam = `modelEditor -q -cam $myPanel`;    } 
+else {    $curCam = $scnCams[0];    }    
+// get the number of the current camera    
+int $i;$camNum = 0;    
+for ($i = 0; $i <= size($myCamsList); $i++) {    
+if ($myCamsList[$i] == $curCam) $camNum = $i;    }    
+// get the next camera    
+string $newCam;    
+if ($camNum == (size($myCamsList)-1)){    
+$newCam = $myCamsList[0];    }
+else {    
+$newCam = $myCamsList[$camNum+1];    }    
+// set the camera to the next one    
+print ($newCam+"\n");    
 lookThroughModelPanel $newCam $myPanel;
